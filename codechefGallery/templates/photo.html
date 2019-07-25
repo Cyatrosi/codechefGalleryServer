@@ -111,6 +111,8 @@
     }
     function init() {
         user = getCookie();
+        if(!user)
+            home()
     }
     // ===== Other Functions =======
 

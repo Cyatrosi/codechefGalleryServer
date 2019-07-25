@@ -17,7 +17,6 @@ function getCookie() {
     }
     return "";
 }
-
 // ============ AUTH Functions ========
 function validate(username, password) {
     if (!username) {

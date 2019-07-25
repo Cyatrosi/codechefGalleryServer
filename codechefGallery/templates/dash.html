@@ -137,8 +137,13 @@
 </html>
 <script>
     var user;
+    function home() {
+        window.location.href = "/photos";
+    }
     function init() {
         user = getCookie();
+        if(!user)
+            home()
         userInitial = user.username[0]
         if (userInitial) {
             userInitial = userInitial.toUpperCase();

@@ -246,7 +246,7 @@
                 <div><b>{{data.first_name}} {{data.last_name}}</b></div>
                 <div>@{{data.username}}</div>
                 <div><b>Email:</b> {{data.username}}</div>
-                <div><b>Gender:</b> {{data.username}}</div>
+                <div><b>Gender:</b> {{data.gender}}</div>
                 <div><button onclick="showUserEdit()" class="btn blue-btn">EDIT</button></div>
             </div>
             <div id="user-details-editable" class="user-details" style="display:none">
@@ -336,6 +336,8 @@
     }
     function init() {
         user = getCookie();
+        if(!user)
+            home()
         getMyPhotos();
     }
     // ====== File uploading =====================================================
@@ -600,7 +602,7 @@
                     while (albumEl.firstChild) {
                         albumEl.removeChild(albumEl.firstChild);
                     }
-                    albumEl.appendChild(optionTag("", "--SELECT--"));
+                    albumEl.appendChild(optionTag("", "--ALBUM--"));
                     for (i = 0; i < data.length; ++i) {
                         albumId = customGet(data[i], "_id");
                         albumEl.appendChild(optionTag(albumId, data[i]['name']));

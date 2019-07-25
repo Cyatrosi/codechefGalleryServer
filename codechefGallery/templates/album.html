@@ -221,6 +221,8 @@
     }
     function init() {
         user = getCookie();
+        if(!user)
+            home();
         getMyPhotos();
     }
     // ====== File uploading =====================================================
