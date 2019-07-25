@@ -42,6 +42,8 @@ def scanRequest(request, userId=None):
     if userId:
         if request.method == 'GET':
             return getPhoto(request, userId)
+        elif request.method == 'DELETE':
+            return deletePhoto(request, userId)
         else:
             return errorResp('Invalid request method')
     else:
@@ -129,8 +131,9 @@ def getPhoto(request, userId):
     if not OId:
         return errorResp(msg)
     res, msg = photosModel.getPic(OId)
-    res = json.loads(res)
     if res:
+        res = json.loads(res)
+        res['imageId'] = res['_id']
         context = {
             'data': res
         }
@@ -165,12 +168,23 @@ def uploadPhoto(request):
     else:
         return errorResp(ermsg)
 
+def deletePhoto(request, photoId):
+    OId, ermsg = ObId(photoId)
+    if not OId:
+        return errorResp(ermsg)
+    res, msg = photosModel.deletePhoto(OId)
+    if res:
+        return createResponse(200, 'Photo Deleted', {"deleted_cnt":res})
+    elif res == 0:
+        return createResponse(200, 'No such Image exists', [])
+    else:
+        return errorResp(msg)
+
 # ====== API ENDPOINTS ======
 
 
 def index(request):
     return scanRequest(request)
-
 
 def photo(request, userId):
     return scanRequest(request, userId)

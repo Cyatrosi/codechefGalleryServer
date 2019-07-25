@@ -72,6 +72,13 @@
             color: #2196f3;
             cursor: pointer;
         }
+        .update-album{
+            width:80%;
+            margin-left:10%;
+            margin-right:10%;
+            border:1px solid #757575;
+            box-shadow: 0px 0px 2px 2px #bdbdbd;
+        }
 
         .modal {
             display: none;
@@ -185,11 +192,56 @@
         .ellipsis {
             text-overflow: ellipsis;
         }
-
         .overflow {
             width: 100%;
             white-space: nowrap;
             overflow: hidden;
+        }
+        .create-album {
+            width: 90%;
+            margin-left: 5%;
+            border: 1px solid #757575;
+            margin-top: 1%;
+            box-shadow: 2px 2px 4px 1px #bdbdbd;
+            cursor: pointer;
+        }
+        .album-form {
+            width: 90%;
+            margin-left: 5%;
+            border: 1px solid #757575;
+            margin-top: 1%;
+            box-shadow: 2px 2px 4px 1px #bdbdbd;
+        }
+        .container {
+            width: 90%;
+            margin-left: 5%;
+            margin-right: 5%;
+            box-shadow: 0px 0px 2px 2px #bdbdbd;
+            padding-bottom: 1%;
+        }
+
+        .image {
+            width: 100%;
+            height: 350px;
+        }
+
+        .details {
+            width: 90%;
+            margin-left: 5%;
+            margin-right: 5%;
+            margin-top: 2%;
+        }
+
+        .desc {
+            width: 100%;
+            border-bottom: 1px solid #bdbdbd;
+            padding-bottom: 1%;
+            margin-bottom: 1%;
+        }
+
+        .table {
+            width: 100%;
+            text-align: center;
         }
     </style>
 </head>
@@ -201,9 +253,56 @@
         <div class="front-logo-text">ALBUM: {{data.name}}</div>
         <div></div>
     </div>
-    <div>
+    <div class="container">
+        <div class="image">
+            <img src="{{data.url}}" style="height:90%;margin-top:1%;">
+        </div>
+        <div class="details">
+            <div class="desc">{{data.desc}}</div>
+            <table class="table">
+                <tr>
+                    <td>
+                        <div><i class="material-icons">favorite</i> <sup>{{data.likes}}</sup></div>
+                    </td>
+                    <td>
+                        <div><i class="material-icons">public</i> <sup>{{data.access}}</sup></div>
+                    </td>
+                    <td>
+                        <div><i class="material-icons">location_on</i> <sup>{{data.location}}</sup></div>
+                    </td>
+                    <td>
+                        <div><i class="material-icons">date_range</i> <sup>{{data.datetime}}</sup></div>
+                    </td>
+                    <td>
+                        <div style="color:#F44336;" onclick = "deleteAlbum('{{data.albumId}}')"><i class="material-icons">delete</i> <sup>delete</sup></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <input type="file" accept="image/jpeg,image/png" style="display:none" id="upload-file" />
+    <div onclick="showAlbumForm()" class="create-album">
+            Edit Album <br /> <i style="font-size:27px;" class="material-icons">edit</i>
+    </div>
+    <div id="album-form" class="album-form" style="display:none;">
+            <div><input id="name-cover" class="txt-inp" type="text" name="name" placeholder="Name"></div>
+            <div><textarea class="txt-inp" id="desc-cover" type="text" placeholder="Description"></textarea></div>
+            <div>
+                <select class="select" id="access-cover" required>
+                    <option value="">--Access--</option>
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                </select>
+            </div>
+            <div id="choose-button">
+                <button class="btn" style="color:#616161;box-shadow: 1px 1px 1px 1px #bdbdbd;border:1px solid#757575;">Cover
+                    Photo<br /><i class="material-icons">cloud_upload</i></button>
+            </div>
+            <div style="display: grid;grid-template-columns: 50% 50%;margin-bottom:2%;margin-top:1%;">
+                <div><button onclick="updateCover()" class="btn green-btn">UPDATE</button></div>
+                <div><button onclick="hideAlbumForm()" class="btn red-btn">CANCEL</button></div>
+            </div>
+    </div>
+    <input type="file" accept="image/jpeg,image/png" style="display:none" id="upload-cover" />
     <br />
     <div id="image-container" class="img-container">
     </div>
@@ -225,14 +324,12 @@
             home();
         getMyPhotos();
     }
-    // ====== File uploading =====================================================
+    // ==== Uploading Album ========
+
     document.querySelector('#choose-button').addEventListener('click', function () {
-        var res = validate(false);
-        if (res) {
-            document.querySelector('#upload-file').click();
-        }
+        document.querySelector('#upload-cover').click();
     });
-    document.querySelector('#upload-file').addEventListener('change', function () {
+    document.querySelector('#upload-cover').addEventListener('change', function () {
         var file = this.files[0];
         var mime_types = ['image/jpeg', 'image/png'];
 
@@ -248,38 +345,39 @@
         }
 
         alert('You have chosen the file ' + file.name);
+    });
+    function updateCover() {
         var data = new FormData();
         var request = new XMLHttpRequest();
 
-        data.append('userId', user._id);
-        data.append('albumId', document.getElementById('albumId').value);
-        data.append('desc', document.getElementById('desc').value);
-        data.append('access', document.getElementById('access').value);
-        data.append('file', document.querySelector('#upload-file').files[0]);
-
+        if(document.getElementById('name-cover').value){
+            data.append('name', document.getElementById('name-cover').value);
+        }
+        if(document.getElementById('desc-cover').value){
+            data.append('desc', document.getElementById('desc-cover').value);
+        }
+        if(document.getElementById('access-cover').value){
+            data.append('access', document.getElementById('access-cover').value);
+        }
+        if(document.querySelector('#upload-cover').files[0]){
+            data.append('file', document.querySelector('#upload-cover').files[0]);
+        }
         request.addEventListener('load', function (e) {
             if (this.status == '200') {
                 var resp = this.response
                 if (resp.status == 200) {
-                    var data = resp.data;
-                    alert(resp.message);
+                    alert("Updated Successfully");
                 } else {
                     alert(resp.message);
                 }
             } else {
                 alert("FAILED!! An error Occured !");
             }
-
         });
-
-        request.upload.addEventListener('progress', function (e) {
-            var percent_complete = (e.loaded / e.total) * 100;
-        });
-
         request.responseType = 'json';
-        request.open('POST', 'http://127.0.0.1:8000/photos/');
+        request.open('POST', "http://127.0.0.1:8000/album/"+"{{albumId}}"+"/");
         request.send(data);
-    });
+    }
 
     // ---------------------------------------------------------------------------------------------------
     // ===== Other Functions =======
@@ -288,24 +386,24 @@
         window.location.href = "/photos";
     }
 
-    function validate(isUrl) {
-        if (isUrl)
-            return {};
+    function validate(type) {
         var res = {};
-        res['desc'] = document.getElementById('desc').value;
-        if (!res['desc']) {
-            alert("Enter Description");
-            return false;
-        }
-        res['access'] = document.getElementById('access').value;
-        if (!res['access']) {
-            alert("Choose Access");
-            return false;
-        }
-        res['albumId'] = document.getElementById('albumId').value;
-        if (!res['albumId']) {
-            alert("Choose Album");
-            return false;
+        if (type == 'cover') {
+            res['desc'] = document.getElementById('desc-cover').value;
+            res['name'] = document.getElementById('name-cover').value;
+            if (!res['name']) {
+                alert("Enter Name");
+                return false;
+            }
+            res['access'] = document.getElementById('access-cover').value;
+            if (!res['access']) {
+                alert("Choose Access");
+                return false;
+            }
+            if (!document.getElementById('upload-cover').files.length) {
+                alert("Choose a Cover Photo");
+                return false;
+            }
         }
         return res;
     }
@@ -331,8 +429,10 @@
             name = "-"
         var img = document.createElement("IMG");
         img.src = src;
-        img.style = "width:100%;height:100px;";
-
+        img.style = "width:100%;height:100px;cursor:pointer;";
+        img.onclick = function(){
+            window.location.href = "http://127.0.0.1:8000/photos/"+id+"/"
+        }
         var div = document.createElement("DIV");
         div.appendChild(document.createTextNode(name));
 
@@ -370,5 +470,30 @@
                 alert("Error getting photos");
             }
         };
+    }
+
+    function showAlbumForm() {
+        document.getElementById('album-form').style.display = 'block';
+    }
+    function hideAlbumForm() {
+        document.getElementById('album-form').style.display = 'none';
+    }
+    function deleteAlbum(id){
+        if(confirm("Delete this Album?")){
+            var request = httpRequest('DELETE', 'http://127.0.0.1:8000/album/' + id + "/", null);
+            request.onload = function () {
+            if (this.status == '200') {
+                var resp = JSON.parse(this.response);
+                if (resp.status == 200) {
+                    alert(resp.message)
+                    window.location.href = 'http://127.0.0.1:8000/users/'+user._id+'/';
+                } else {
+                    alert(resp.message);
+                }
+            } else {
+                alert("Error getting photos");
+            }
+        };
+        }
     }
 </script>

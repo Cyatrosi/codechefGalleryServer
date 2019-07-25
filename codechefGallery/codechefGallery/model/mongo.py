@@ -104,3 +104,11 @@ class mongo():
             return res.deleted_count, "OK"
         except Exception as e:
             return None, str(e)
+
+    def deleteDocs(self, collection, condition):
+        mongoColl = self.mongoClient[self.db][collection]
+        try:
+            res = mongoColl.delete_many(condition)
+            return res.deleted_count, "OK"
+        except Exception as e:
+            return None, str(e)

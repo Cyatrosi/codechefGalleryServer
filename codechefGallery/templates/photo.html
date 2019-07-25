@@ -93,6 +93,9 @@
                     <td>
                         <div><i class="material-icons">date_range</i> <sup>{{data.datetime}}</sup></div>
                     </td>
+                    <td>
+                        <div style="color:#F44336;" onclick = "deleteImage('{{data.imageId}}')"><i class="material-icons">delete</i> <sup>delete</sup></div>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -202,5 +205,23 @@
                 alert("Error getting photos");
             }
         };
+    }
+    function deleteImage(id){
+        if(confirm("Delete this Image?")){
+            var request = httpRequest('DELETE', 'http://127.0.0.1:8000/photos/' + id + "/", null);
+            request.onload = function () {
+            if (this.status == '200') {
+                var resp = JSON.parse(this.response);
+                if (resp.status == 200) {
+                    alert(resp.message)
+                    window.location.href = 'http://127.0.0.1:8000/users/'+user._id+'/';
+                } else {
+                    alert(resp.message);
+                }
+            } else {
+                alert("Error getting photos");
+            }
+        };
+        }
     }
 </script>

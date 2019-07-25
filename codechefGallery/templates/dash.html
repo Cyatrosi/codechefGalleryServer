@@ -47,10 +47,7 @@
         }
 
         .lifted-option {
-            border: 2px solid #757575;
-            box-shadow: 1px 1px 1px 1px #bdbdbd;
             cursor: pointer;
-            background-color: white;
         }
 
         .option-tray {
@@ -121,10 +118,9 @@
                 <img src='{{ pic.url }}' style="width:100%;height:130px;">
             </div>
             <div class="option-tray">
-                <div class="lifted-option circle"><i class="material-icons timid">favorite</i></div>
+                <div class="lifted-option"><i class="material-icons timid">favorite</i></div>
                 <div class="left">{{pic.likes}}</div>
-                <div onclick="window.location.href='http://127.0.0.1:8000/album/{{pic.albumId}}'"
-                    class="lifted-option square"><i class="material-icons timid">photo_album</i></div>
+                <div onclick="window.location.href='http://127.0.0.1:8000/album/{{pic.albumId}}'" class="lifted-option"><i class="material-icons timid">photo_album</i></div>
             </div>
             <div style="color:#757575;width:95.5%;height:10%;padding:5px;">
                 <p class="overflow ellipsis">{{pic.desc}}</p>

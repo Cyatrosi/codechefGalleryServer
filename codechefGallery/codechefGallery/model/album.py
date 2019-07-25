@@ -31,3 +31,24 @@ class album(mongo):
         query = dict(_id=userId)
         newValues = {'$set': newValues}
         return super().updateDoc(self.collection,query,newValues)
+    
+    def deleteAlbum(self,id):
+        query = {'_id':id}
+        return super().deleteDoc(self.collection,query)
+    
+    ## ========== Like function =============
+
+    def getLikes(self,albumId):
+        query = {'_id':albumId}
+        projection = {'likes':1}
+        return super().getDocAggregate(self.collection,query,projection)
+
+    def setLikes(self,albumId,newLikes):
+        query = dict(_id=albumId)
+        newValues = {'$set': newLikes}
+        return super().updateDoc(self.collection,query,newValues)
+    
+    def hasLike(self,albumId,userId):
+        query = {'_id':albumId,'likes':{'$all':[userId]}}
+        projection = {'_id':1}
+        return super().getDoc(self.collection,query,projection)

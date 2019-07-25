@@ -431,7 +431,8 @@
             data.append('desc', document.getElementById('desc-cover').value);
             data.append('access', document.getElementById('access-cover').value);
             data.append('file', document.querySelector('#upload-cover').files[0]);
-
+            console.log("DatA:",data)
+            
             request.addEventListener('load', function (e) {
                 if (this.status == '200') {
                     var resp = this.response
@@ -602,7 +603,7 @@
                     while (albumEl.firstChild) {
                         albumEl.removeChild(albumEl.firstChild);
                     }
-                    albumEl.appendChild(optionTag("", "--ALBUM--"));
+                    albumEl.appendChild(optionTag("", "--Album--"));
                     for (i = 0; i < data.length; ++i) {
                         albumId = customGet(data[i], "_id");
                         albumEl.appendChild(optionTag(albumId, data[i]['name']));

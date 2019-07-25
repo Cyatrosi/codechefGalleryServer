@@ -25,4 +25,5 @@ urlpatterns = [
     path('users/',include('users.urls')),
     path('photos/',include('photos.urls')),
     path('album/',include('album.urls')),
+    path('likes/',include('likes.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -27,3 +27,28 @@ class photos(mongo):
         query = {'albumId':albumId}
         projection = {"access":1,"url":1,"albumId":1,"desc":1,"datetime":1,"owner":1,"location":1,"likes": { '$cond': { 'if': { '$isArray': "$likes" }, 'then': { '$size': "$likes" }, 'else': "0"} }}
         return super().getDocsAggregate(self.collection,query,projection,None,start,limit)
+
+    def deletePhoto(self,id):
+        query = {'_id':id}
+        return super().deleteDoc(self.collection,query)
+    
+    def deleteAlbumPhoto(self,albumId):
+        query = {'albumId':albumId}
+        return super().deleteDocs(self.collection,query)
+
+    ## ========== Like function =============
+
+    def getLikes(self,photoId):
+        query = {'_id':photoId}
+        projection = {'likes':1}
+        return super().getDocAggregate(self.collection,query,projection)
+
+    def setLikes(self,photoId,newLikes):
+        query = dict(_id=photoId)
+        newValues = {'$set': newLikes}
+        return super().updateDoc(self.collection,query,newValues)
+    
+    def hasLike(self,photoId,userId):
+        query = {'_id':photoId,'likes':{'$all':[userId]}}
+        projection = {'_id':1}
+        return super().getDoc(self.collection,query,projection)
