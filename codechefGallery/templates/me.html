@@ -1,0 +1,630 @@
+<html>
+
+<head>
+    <title>Codechef Gallery</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script defer src="{% static 'js/index.js' %}"></script>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            color: #757575;
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+        }
+
+        .front-logo {
+            width: 100%;
+            margin-top: 2%;
+            margin-bottom: 3%;
+            display: grid;
+            grid-template-columns: 10% 80% 10%;
+        }
+
+        .front-logo-text {
+            font-size: 25px
+        }
+
+        .profile-container {
+            width: 98%;
+            margin-left: 1%;
+            margin-right: 1%;
+            display: grid;
+            grid-template-columns: 30% 20% 30% 20%;
+            border: 1px solid #757575;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            box-shadow: 1px 1px 3px 1px #bdbdbd;
+        }
+
+        .user-details {
+            width: 90%;
+            margin-left: 5%;
+            display: grid;
+            grid-template-rows: 15% 15% 15% 15% 40%;
+            text-align: left;
+        }
+
+        .upload-container {
+            display: grid;
+            grid-template-rows: 20% 30% 30% 20%;
+            background-color: #eeeeee;
+            width: 80%;
+            margin-left: 10%;
+            margin-right: 10%;
+            box-shadow: 0px 0px 2px 2px #bdbdbd;
+        }
+
+        .upload-info {
+            display: grid;
+            grid-template-rows: auto auto auto;
+            border: 1px solid #757575;
+        }
+
+        .upload-text {
+            font-size: 17px;
+        }
+
+        .upload-icon {
+            font-size: 31px;
+        }
+
+        .upload-icon:hover {
+            color: #2196f3;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            /* Could be more or less, depending on screen size */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .txt-inp {
+            background: transparent;
+            border: none;
+            outline: none;
+            border-bottom: 1px solid #757575;
+            padding: 5px;
+            width: 80%;
+            margin-left: 10%;
+            margin-right: 10%;
+            margin-top: 2%;
+            margin-bottom: 2%;
+            color: #757575;
+            font-size: 17px;
+        }
+
+        .select {
+            background-color: #f5f5f5;
+            border: none;
+            outline: none;
+            padding: 5px;
+            width: 80%;
+            margin-left: 10%;
+            margin-right: 10%;
+            margin-top: 2%;
+            margin-bottom: 2%;
+            color: #757575;
+            font-size: 17px;
+            border: 1px solid #bdbdbd;
+        }
+
+        .btn {
+            padding: 7px;
+            width: 50%;
+            margin-left: 25%;
+            margin-right: 25%;
+            margin-top: 2%;
+            outline: none;
+            border: none;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .long-btn {
+            padding: 7px;
+            width: 90%;
+            margin-left: 5%;
+            margin-right: 5%;
+            margin-top: 2%;
+            outline: none;
+            border: none;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .green-btn {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .red-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .blue-btn {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .transparent-btn {
+            background-color: transparent;
+        }
+
+        .img-container {
+            display: grid;
+            grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
+            width: 90%;
+            margin-left: 5%;
+        }
+
+        .image-card {
+            width: 90%;
+            margin-left: 5%;
+            border: 1px solid #757575;
+            margin-top: 5%;
+            box-shadow: 2px 2px 4px 1px #bdbdbd;
+            cursor: pointer;
+        }
+
+        .create-album {
+            width: 90%;
+            margin-left: 5%;
+            border: 1px solid #757575;
+            margin-top: 1%;
+            box-shadow: 2px 2px 4px 1px #bdbdbd;
+            cursor: pointer;
+        }
+
+        .album-form {
+            width: 90%;
+            margin-left: 5%;
+            border: 1px solid #757575;
+            margin-top: 1%;
+            box-shadow: 2px 2px 4px 1px #bdbdbd;
+        }
+    </style>
+</head>
+
+<body onload='init()'>
+    <div class="front-logo">
+        <div onclick="home()" style="cursor: pointer;"><i style="font-size:25px;" class="material-icons">home</i></div>
+        <div class="front-logo-text">USER PROFILE</div>
+        <div onclick="logout()" style="cursor: pointer;"><i style="font-size:25px;" class="material-icons">logout</i>
+        </div>
+    </div>
+    <div>
+        <div class="profile-container">
+            <div>
+                <img style="width:90%;margin-left:5%;height:200px;" src="{{data.dp  }}">
+            </div>
+            <div id="user-details" class="user-details">
+                <div><b>{{data.first_name}} {{data.last_name}}</b></div>
+                <div>@{{data.username}}</div>
+                <div><b>Email:</b> {{data.username}}</div>
+                <div><b>Gender:</b> {{data.username}}</div>
+                <div><button onclick="showUserEdit()" class="btn blue-btn">EDIT</button></div>
+            </div>
+            <div id="user-details-editable" class="user-details" style="display:none">
+                <div><input id="first-name-user" class="txt-inp" type="text" name="name" placeholder="First Name"></div>
+                <div><input id="last-name-user" class="txt-inp" type="text" name="name" placeholder="Last Name"></div>
+                <div><input id="email-user" class="txt-inp" type="email" name="name" placeholder="Email Id"></div>
+                <div>
+                    <select class="select" id="gender-user" required>
+                        <option value="">--SELECT--</option>
+                        <option value="M">MALE</option>
+                        <option value="F">FEMALE</option>
+                    </select>
+                </div>
+                <div></div>
+                <div style="display: grid;grid-template-columns: 80% 20%">
+                    <button onclick="updateUserInfo()" class="long-btn green-btn">UPDATE</button>
+                    <button onclick="hideUserEdit()" class="long-btn transparent-btn"><i
+                            class="material-icons">close</i></button>
+                </div>
+            </div>
+            <div class="upload-info">
+                <div><textarea class="txt-inp" id="desc" type="text" placeholder="Description"></textarea></div>
+                <div>
+                    <select class="select" id="access" required>
+                        <option value="">--Access--</option>
+                        <option value="public">Public</option>
+                        <option value="private">Private</option>
+                    </select>
+                </div>
+                <div>
+                    <select class="select" id="albumId" required>
+                        <option value="">--Album--</option>
+                        <option value="123">Test</option>
+                    </select>
+                </div>
+            </div>
+            <div class="upload-container">
+                <div></div>
+                <div class="upload-text">Upload Photo</div>
+                <div id="choose-button">
+                    <i class="material-icons upload-icon">cloud_upload</i>
+                </div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+    <input type="file" accept="image/jpeg,image/png" style="display:none" id="upload-file" />
+    <input type="file" accept="image/jpeg,image/png" style="display:none" id="upload-cover" />
+    <div onclick="showAlbumForm()" class="create-album">
+        Create Album <br /> <i style="font-size:31px;" class="material-icons">add</i>
+    </div>
+    <div id="album-form" class="album-form" style="display: none;">
+        <div><input id="name-cover" class="txt-inp" type="text" name="name" placeholder="Name"></div>
+        <div><textarea class="txt-inp" id="desc-cover" type="text" placeholder="Description"></textarea></div>
+        <div>
+            <select class="select" id="access-cover" required>
+                <option value="">--Access--</option>
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+            </select>
+        </div>
+        <div id="choose-button2">
+            <button class="btn" style="color:#616161;box-shadow: 1px 1px 1px 1px #bdbdbd;border:1px solid#757575;">Cover
+                Photo<br /><i class="material-icons">cloud_upload</i></button>
+        </div>
+        <div style="display: grid;grid-template-columns: 50% 50%;margin-bottom:2%;margin-top:1%;">
+            <div><button onclick="uploadCover()" class="btn green-btn">CREATE</button></div>
+            <div><button onclick="hideAlbumForm()" class="btn red-btn">CANCEL</button></div>
+        </div>
+    </div>
+    <div id="image-container" class="img-container">
+    </div>
+</body>
+
+</html>
+<script>
+    var user;
+    function getCookie() {
+        var cookies = document.cookie.split(";");
+        if (cookies.length > 1) {
+            return JSON.parse(cookies[1]);
+        }
+        return "";
+    }
+    function clearCookie(data) {
+        document.cookie = "";
+    }
+    function init() {
+        user = getCookie();
+        getMyPhotos();
+    }
+    // ====== File uploading =====================================================
+    // ==== Uploading PIC ========
+
+    document.querySelector('#choose-button').addEventListener('click', function () {
+        var res = validate('pic');
+        if (res) {
+            document.querySelector('#upload-file').click();
+        }
+    });
+    document.querySelector('#upload-file').addEventListener('change', function () {
+        var file = this.files[0];
+        var mime_types = ['image/jpeg', 'image/png'];
+
+        if (mime_types.indexOf(file.type) == -1) {
+            alert('Error : Incorrect file type');
+            return;
+        }
+
+        // Max 2 Mb allowed
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Error : Exceeded size 2MB');
+            return;
+        }
+
+        alert('You have chosen the file ' + file.name);
+        uploadPhoto();
+
+    });
+    function uploadPhoto() {
+        var data = new FormData();
+        var request = new XMLHttpRequest();
+
+        data.append('userId', user._id);
+        data.append('albumId', document.getElementById('albumId').value);
+        data.append('desc', document.getElementById('desc').value);
+        data.append('access', document.getElementById('access').value);
+        data.append('file', document.querySelector('#upload-file').files[0]);
+
+        request.addEventListener('load', function (e) {
+            if (this.status == '200') {
+                var resp = this.response
+                if (resp.status == 200) {
+                    var data = resp.data;
+                    alert(resp.message);
+                } else {
+                    alert(resp.message);
+                }
+            } else {
+                alert("FAILED!! An error Occured !");
+            }
+
+        });
+
+        request.responseType = 'json';
+        request.open('POST', 'http://127.0.0.1:8000/photos/');
+        request.send(data);
+    }
+
+    // ==== Uploading Album ========
+
+    document.querySelector('#choose-button2').addEventListener('click', function () {
+        document.querySelector('#upload-cover').click();
+    });
+    document.querySelector('#upload-cover').addEventListener('change', function () {
+        var file = this.files[0];
+        var mime_types = ['image/jpeg', 'image/png'];
+
+        if (mime_types.indexOf(file.type) == -1) {
+            alert('Error : Incorrect file type');
+            return;
+        }
+
+        // Max 2 Mb allowed
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Error : Exceeded size 2MB');
+            return;
+        }
+
+        alert('You have chosen the file ' + file.name);
+    });
+    function uploadCover() {
+        var res = validate('cover');
+        if (res) {
+            var data = new FormData();
+            var request = new XMLHttpRequest();
+
+            data.append('userId', user._id);
+            data.append('name', document.getElementById('name-cover').value);
+            data.append('desc', document.getElementById('desc-cover').value);
+            data.append('access', document.getElementById('access-cover').value);
+            data.append('file', document.querySelector('#upload-cover').files[0]);
+
+            request.addEventListener('load', function (e) {
+                if (this.status == '200') {
+                    var resp = this.response
+                    if (resp.status == 200) {
+                        var data = resp.data;
+                        alert(resp.message);
+                    } else {
+                        alert(resp.message);
+                    }
+                } else {
+                    alert("FAILED!! An error Occured !");
+                }
+
+            });
+
+            request.responseType = 'json';
+            request.open('POST', 'http://127.0.0.1:8000/album/');
+            request.send(data);
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------------
+    // ===== Other Functions =======
+
+    function home() {
+        window.location.href = "/photos";
+    }
+
+    function showAlbumForm() {
+        document.getElementById('album-form').style.display = 'block';
+    }
+    function hideAlbumForm() {
+        document.getElementById('album-form').style.display = 'none';
+    }
+    function showUserEdit() {
+        document.getElementById('user-details').style.display = 'none';
+        document.getElementById('user-details-editable').style.display = 'block';
+    }
+    function hideUserEdit() {
+        document.getElementById('user-details').style.display = 'block';
+        document.getElementById('user-details-editable').style.display = 'none';
+    }
+    function logout() {
+        clearCookie();
+        window.location.href = "/";
+    }
+    function updateUserInfo() {
+        var body = {};
+        if (document.getElementById("first-name-user").value) {
+            body['first_name'] = document.getElementById("first-name-user").value
+        }
+        if (document.getElementById("last-name-user").value) {
+            body['last_name'] = document.getElementById("last-name-user").value
+        }
+        if (document.getElementById("email-user").value) {
+            body['email'] = document.getElementById("email-user").value
+        }
+        if (document.getElementById("gender-user").value) {
+            body['gender'] = document.getElementById("gender-user").value
+        }
+        body = JSON.stringify(body);
+        var request = httpRequest('PUT', 'http://127.0.0.1:8000/users/' + user._id + "/", body);
+        request.onload = function () {
+            if (this.status == '200') {
+                var resp = JSON.parse(this.response);
+                if (resp.status == 200) {
+                    var data = resp.data;
+                    alert(resp.message);
+                } else {
+                    alert(resp.message);
+                }
+            } else {
+                alert("Error Updatng Users");
+            }
+        };
+    }
+    function validate(type) {
+        var res = {};
+        if (type == 'pic') {
+            res['desc'] = document.getElementById('desc').value;
+            res['access'] = document.getElementById('access').value;
+            if (!res['access']) {
+                alert("Choose Access");
+                return false;
+            }
+            res['albumId'] = document.getElementById('albumId').value;
+            if (!res['albumId']) {
+                alert("Choose Album");
+                return false;
+            }
+        }
+        else if (type == 'cover') {
+            res['desc'] = document.getElementById('desc-cover').value;
+            res['name'] = document.getElementById('name-cover').value;
+            if (!res['name']) {
+                alert("Enter Name");
+                return false;
+            }
+            res['access'] = document.getElementById('access-cover').value;
+            if (!res['access']) {
+                alert("Choose Access");
+                return false;
+            }
+            if (!document.getElementById('upload-cover').files.length) {
+                alert("Choose a Cover Photo");
+                return false;
+            }
+        }
+        return res;
+    }
+    function httpRequest(method, url, params) {
+        var request = new XMLHttpRequest();
+        request.open(method, url, true);
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+        if (params == null) {
+            request.send();
+        } else {
+            request.send(params);
+        }
+        return request;
+    }
+    function jsonToUrlParams(data) {
+        url = Object.keys(data).map(function (k) {
+            return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+        }).join('&')
+        return url;
+    }
+    function imageCard(src, id, name) {
+        if (name == "")
+            name = "-"
+        var img = document.createElement("IMG");
+        img.src = src;
+        img.style = "width:100%;height:100px;";
+
+        var div = document.createElement("DIV");
+        div.appendChild(document.createTextNode(name));
+
+        var imgBox = document.createElement("DIV");
+        imgBox.className = "image-card";
+        imgBox.id = id;
+        imgBox.onclick = function () {
+            window.location.href = "http://127.0.0.1:8000/album/" + id;
+        }
+        imgBox.appendChild(img);
+        imgBox.appendChild(div);
+
+        return imgBox;
+    }
+    function populateImages(data) {
+        imgBox = document.getElementById('image-container');
+        for (i = 0; i < data.length; ++i) {
+            imgBox.appendChild(imageCard(data[i]['url'], data[i]['_id'], data[i]['name']));
+        }
+    }
+    function getMyPhotos() {
+        params = {
+            "userId": user._id
+        };
+        params = jsonToUrlParams(params)
+        var request = httpRequest('GET', 'http://127.0.0.1:8000/album/my' + "?" + params, true);
+        request.onload = function () {
+            if (this.status == '200') {
+                var resp = JSON.parse(this.response);
+                if (resp.status == 200) {
+                    var data = resp.data;
+                    albumEl = document.getElementById('albumId');
+                    while (albumEl.firstChild) {
+                        albumEl.removeChild(albumEl.firstChild);
+                    }
+                    albumEl.appendChild(optionTag("", "--SELECT--"));
+                    for (i = 0; i < data.length; ++i) {
+                        albumId = customGet(data[i], "_id");
+                        albumEl.appendChild(optionTag(albumId, data[i]['name']));
+                    }
+                    populateImages(data);
+                } else {
+                    alert(resp.message);
+                }
+            } else {
+                alert("Error getting photos");
+            }
+        };
+    }
+    function customGet(d, reqKey) {
+        for (var key in d) {
+            if (key == reqKey)
+                return d[key];
+        }
+        return null;
+    }
+    function optionTag(value, text) {
+        var opt = document.createElement("OPTION");
+        opt.value = value;
+        opt.appendChild(document.createTextNode(text));
+        return opt;
+    }
+</script>

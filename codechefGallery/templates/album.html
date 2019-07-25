@@ -1,0 +1,372 @@
+<html>
+
+<head>
+    <title>Codechef Gallery</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script defer src="{% static 'js/index.js' %}"></script>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            color: #757575;
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+        }
+
+        .front-logo {
+            width: 100%;
+            margin-top: 2%;
+            margin-bottom: 3%;
+            display: grid;
+            grid-template-columns: 10% 80% 10%;
+        }
+
+        .front-logo-text {
+            font-size: 25px
+        }
+
+        .profile-container {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 30% 20% 30% 20%;
+            border: 1px solid #bdbdbd;
+            padding: 10px;
+        }
+
+        .user-details {
+            width: 90%;
+            margin-left: 5%;
+            display: grid;
+            grid-template-rows: 10% 10% 80%;
+            text-align: left;
+        }
+
+        .upload-container {
+            display: grid;
+            grid-template-rows: 20% 30% 30% 20%;
+            background-color: #eeeeee;
+            width: 80%;
+            margin-left: 10%;
+            margin-right: 10%;
+            box-shadow: 0px 0px 2px 2px #bdbdbd;
+        }
+
+        .upload-info {
+            display: grid;
+            grid-template-rows: auto auto auto;
+            border: 1px solid #757575;
+        }
+
+        .upload-text {
+            font-size: 17px;
+        }
+
+        .upload-icon {
+            font-size: 31px;
+        }
+
+        .upload-icon:hover {
+            color: #2196f3;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            /* Could be more or less, depending on screen size */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .txt-inp {
+            background: transparent;
+            border: none;
+            outline: none;
+            border-bottom: 1px solid #757575;
+            padding: 5px;
+            width: 80%;
+            margin-left: 10%;
+            margin-right: 10%;
+            margin-top: 2%;
+            margin-bottom: 2%;
+            color: #757575;
+            font-size: 17px;
+        }
+
+        .select {
+            background-color: #f5f5f5;
+            border: none;
+            outline: none;
+            padding: 5px;
+            width: 80%;
+            margin-left: 10%;
+            margin-right: 10%;
+            margin-top: 2%;
+            margin-bottom: 2%;
+            color: #757575;
+            font-size: 17px;
+            border: 1px solid #bdbdbd;
+        }
+
+        .btn {
+            padding: 7px;
+            width: 50%;
+            margin-left: 25%;
+            margin-right: 25%;
+            margin-top: 2%;
+            outline: none;
+            border: none;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .green-btn {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .img-container {
+            display: grid;
+            grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
+            width: 90%;
+            margin-left: 5%;
+        }
+
+        .image-card {
+            width: 90%;
+            margin-left: 5%;
+            border: 1px solid #757575;
+            margin-top: 5%;
+            box-shadow: 2px 2px 4px 1px #bdbdbd;
+            display: grid;
+            grid-template-rows: 80% 20%;
+        }
+
+        .ellipsis {
+            text-overflow: ellipsis;
+        }
+
+        .overflow {
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body onload='init()'>
+    <div class="front-logo">
+        <div onclick="window.history.go(-1);" style="cursor: pointer;"><i style="font-size:25px;"
+                class="material-icons">arrow_back</i></div>
+        <div class="front-logo-text">ALBUM: {{data.name}}</div>
+        <div></div>
+    </div>
+    <div>
+    </div>
+    <input type="file" accept="image/jpeg,image/png" style="display:none" id="upload-file" />
+    <br />
+    <div id="image-container" class="img-container">
+    </div>
+</body>
+
+</html>
+<script>
+    var user;
+    function getCookie() {
+        var cookies = document.cookie.split(";");
+        if (cookies.length > 1) {
+            return JSON.parse(cookies[1]);
+        }
+        return "";
+    }
+    function init() {
+        user = getCookie();
+        getMyPhotos();
+    }
+    // ====== File uploading =====================================================
+    document.querySelector('#choose-button').addEventListener('click', function () {
+        var res = validate(false);
+        if (res) {
+            document.querySelector('#upload-file').click();
+        }
+    });
+    document.querySelector('#upload-file').addEventListener('change', function () {
+        var file = this.files[0];
+        var mime_types = ['image/jpeg', 'image/png'];
+
+        if (mime_types.indexOf(file.type) == -1) {
+            alert('Error : Incorrect file type');
+            return;
+        }
+
+        // Max 2 Mb allowed
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Error : Exceeded size 2MB');
+            return;
+        }
+
+        alert('You have chosen the file ' + file.name);
+        var data = new FormData();
+        var request = new XMLHttpRequest();
+
+        data.append('userId', user._id);
+        data.append('albumId', document.getElementById('albumId').value);
+        data.append('desc', document.getElementById('desc').value);
+        data.append('access', document.getElementById('access').value);
+        data.append('file', document.querySelector('#upload-file').files[0]);
+
+        request.addEventListener('load', function (e) {
+            if (this.status == '200') {
+                var resp = this.response
+                if (resp.status == 200) {
+                    var data = resp.data;
+                    alert(resp.message);
+                } else {
+                    alert(resp.message);
+                }
+            } else {
+                alert("FAILED!! An error Occured !");
+            }
+
+        });
+
+        request.upload.addEventListener('progress', function (e) {
+            var percent_complete = (e.loaded / e.total) * 100;
+        });
+
+        request.responseType = 'json';
+        request.open('POST', 'http://127.0.0.1:8000/photos/');
+        request.send(data);
+    });
+
+    // ---------------------------------------------------------------------------------------------------
+    // ===== Other Functions =======
+
+    function home() {
+        window.location.href = "/photos";
+    }
+
+    function validate(isUrl) {
+        if (isUrl)
+            return {};
+        var res = {};
+        res['desc'] = document.getElementById('desc').value;
+        if (!res['desc']) {
+            alert("Enter Description");
+            return false;
+        }
+        res['access'] = document.getElementById('access').value;
+        if (!res['access']) {
+            alert("Choose Access");
+            return false;
+        }
+        res['albumId'] = document.getElementById('albumId').value;
+        if (!res['albumId']) {
+            alert("Choose Album");
+            return false;
+        }
+        return res;
+    }
+    function httpRequest(method, url, params) {
+        var request = new XMLHttpRequest();
+        request.open(method, url, true);
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        if (params == null) {
+            request.send();
+        } else {
+            request.send(params);
+        }
+        return request;
+    }
+    function jsonToUrlParams(data) {
+        url = Object.keys(data).map(function (k) {
+            return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+        }).join('&')
+        return url;
+    }
+    function imageCard(src, id, name) {
+        if (name == "")
+            name = "-"
+        var img = document.createElement("IMG");
+        img.src = src;
+        img.style = "width:100%;height:100px;";
+
+        var div = document.createElement("DIV");
+        div.appendChild(document.createTextNode(name));
+
+        var imgBox = document.createElement("DIV");
+        imgBox.className = "image-card";
+        imgBox.id = id;
+        imgBox.appendChild(img);
+        imgBox.appendChild(div);
+
+        return imgBox;
+    }
+    function populateImages(data) {
+        imgBox = document.getElementById('image-container');
+        for (i = 0; i < data.length; ++i) {
+            imgBox.appendChild(imageCard(data[i]['url'], data[i]['_id'], data[i]['desc']));
+        }
+    }
+    function getMyPhotos() {
+        params = {
+            "userId": user._id
+        };
+        params = jsonToUrlParams(params)
+        albumId = "{{albumId}}";
+        var request = httpRequest('GET', 'http://127.0.0.1:8000/photos/album/' + albumId, true);
+        request.onload = function () {
+            if (this.status == '200') {
+                var resp = JSON.parse(this.response);
+                if (resp.status == 200) {
+                    var data = resp.data;
+                    populateImages(data);
+                } else {
+                    alert(resp.message);
+                }
+            } else {
+                alert("Error getting photos");
+            }
+        };
+    }
+</script>

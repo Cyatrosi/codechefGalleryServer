@@ -1,0 +1,107 @@
+body{
+    background-color:#f5f5f5;
+    color:#757575;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+}
+.front-logo{
+    width:100%;
+    margin-top:10%;
+}
+.front-logo-text{
+    font-size:25px
+}
+.form{
+    margin-top:5%;
+    width:80%;
+    margin-left:10%;
+}
+.txt-inp{
+    background: transparent;
+    border:none;
+    outline: none;
+    border-bottom:1px solid #757575;
+    padding:5px;
+    width:50%;
+    margin-left:25%;
+    margin-right:25%;
+    margin-top:2%;
+    margin-bottom:2%;
+    color:#757575;
+    font-size:17px;
+}
+.long-txt-inp{
+    background: transparent;
+    border:none;
+    outline: none;
+    border-bottom:1px solid #757575;
+    padding:5px;
+    width:90%;
+    margin-left:5%;
+    margin-right:5%;
+    margin-top:2%;
+    margin-bottom:2%;
+    color:#757575;
+    font-size:17px;
+}
+.btn{
+    padding:7px;
+    width:50%;
+    margin-left:25%;
+    margin-right:25%;
+    margin-top:2%;
+    outline:none;
+    border:none;
+    font-size:17px;
+    cursor: pointer;
+}
+.upload-container {
+    display: grid;
+    grid-template-rows: 20% 30% 30% 20%;
+    background-color: #eeeeee;
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top:1%;
+    box-shadow: 0px 0px 2px 2px #bdbdbd;
+    cursor: pointer;
+}
+
+.upload-info {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    border: 1px solid #757575;
+}
+
+.upload-text {
+    font-size: 17px;
+}
+
+.upload-icon {
+    font-size: 31px;
+}
+
+.upload-icon:hover {
+    color: #2196f3;
+    cursor: pointer;
+}
+.login{
+    background-color:#4CAF50;
+    color:white;
+}
+.signup{
+    background-color:#E91E63;
+    color:white;
+}
+.switch-text{
+    color:#757575;
+    font-size:15px;
+}
+.pink-txt{
+    color:#E91E63;
+    cursor: pointer;
+}
+.green-txt{
+    color:#4CAF50;
+    cursor: pointer;
+}
