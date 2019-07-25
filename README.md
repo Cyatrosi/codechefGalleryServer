@@ -5,12 +5,50 @@ Requirements:
 Python Version: 3.6.7
 Modules: [django, boto3, bson, json]
 
+Database:
+  Name: mongo 4.0.9
+  Database Name: "gallery"
+Collections: 
+   1: "album": Schema:
+       {
+        "name" : String,
+        "access" : enum("public","private"),
+        "likes" : [mixed],
+        "url" : String,
+        "desc" : String,
+        "datetime" : ISODate,
+        "location" : String,
+        "owner" : String
+        }
+   2: "photos": Schema:
+       {
+        "access" : enum("public","private"),
+        "likes" : [mixed],
+        "url" : String,
+        "albumId" : String,
+        "desc" : String,
+        "datetime" : ISODate,
+        "location" : String,
+        "owner" : String
+        }
+   3: "users": Schema:
+       {
+        "username" : String,
+        "first_name" : String,
+        "last_name" : String,
+        "gender" : enum("M","F"),
+        "email" : String,
+        "dp" : String,
+        "password" : String
+        }
+
 Steps:
 1: Clone the App
 2: Install all python modules
-3: Go to <Downloaded Path>/codechefGalleryServer/codechefGallery
-4: run python3 manage.py runserver 8000 [Server will run on http://127.0.0.1:8000/ ]
-5: Open the URL and you are good to go. The main webpage will open up
+3: Run Mongo
+4: Go to <Downloaded Path>/codechefGalleryServer/codechefGallery
+5: run python3 manage.py runserver 8000 [Server will run on http://127.0.0.1:8000/ ]
+6: Open the URL and you are good to go. The main webpage will open up
 
 
 
