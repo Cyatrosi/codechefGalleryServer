@@ -14,6 +14,7 @@ albumModel = album()
 
 # ====== Util Functions =====
 
+
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, ObjectId):
@@ -32,6 +33,7 @@ def ObjectIdToStr(id):
         res = None
     return res
 
+
 def filterParams(request):
     body = {}
     if request.method == 'POST':
@@ -41,13 +43,15 @@ def filterParams(request):
         else:
             body = {}
     elif request.method == 'GET':
-       body = dict(request.GET.dict()) 
+        body = dict(request.GET.dict())
     else:
         body = {}
     return body
 
+
 def createResponse(statusCode, msg, data):
     return JsonResponse(dict(status=statusCode, message=msg, data=data))
+
 
 def errorResp(msg):
     return JsonResponse(dict(status=400, message=msg, data=[]))
@@ -57,12 +61,14 @@ def ObId(id):
     try:
         return ObjectId(id), "OK"
     except Exception as e:
-        return None, "Invalid Id"
+        return None, "Invalid Object Id"
 
 # ====== API ENDPOINTS ======
 
+
 def index(request):
     return HttpResponse("Hello")
+
 
 def photo(request):
     if request.method == 'GET':
@@ -72,6 +78,7 @@ def photo(request):
     else:
         errorResp('Invalid request method')
 
+
 def albums(request):
     if request.method == 'POST':
         return likeAlbum(request)
@@ -79,6 +86,7 @@ def albums(request):
         return hasLikedAlbum(request)
     else:
         errorResp('Invalid request method')
+
 
 def likePhoto(request):
     body = filterParams(request)
@@ -92,7 +100,7 @@ def likePhoto(request):
     POId, msg = ObId(body['photoId'])
     if not POId:
         return errorResp(msg)
-    likes,msg = photosModel.getLikes(POId)
+    likes, msg = photosModel.getLikes(POId)
     if likes:
         likes = json.loads(likes)
         likes = likes['likes']
@@ -103,13 +111,14 @@ def likePhoto(request):
             if userId in likes:
                 likes.remove(userId)
         else:
-            return errorResp("Invalid Type")    
-        res,exmsg = photosModel.setLikes(POId,{'likes':likes})
+            return errorResp("Invalid Type")
+        res, exmsg = photosModel.setLikes(POId, {'likes': likes})
         if res:
-            return createResponse(200,'OK',[])
+            return createResponse(200, 'OK', [])
         return errorResp(exmsg)
     else:
         return errorResp(msg)
+
 
 def likeAlbum(request):
     body = filterParams(request)
@@ -123,7 +132,7 @@ def likeAlbum(request):
     POId, msg = ObId(body['albumId'])
     if not POId:
         return errorResp(msg)
-    likes,msg = albumModel.getLikes(POId)
+    likes, msg = albumModel.getLikes(POId)
     if likes:
         likes = json.loads(likes)
         likes = likes['likes']
@@ -134,13 +143,14 @@ def likeAlbum(request):
             if userId in likes:
                 likes.remove(userId)
         else:
-            return errorResp("Invalid Type")    
-        res,exmsg = albumModel.setLikes(POId,{'likes':likes})
+            return errorResp("Invalid Type")
+        res, exmsg = albumModel.setLikes(POId, {'likes': likes})
         if res:
-            return createResponse(200,'OK',[])
+            return createResponse(200, 'OK', [])
         return errorResp(exmsg)
     else:
         return errorResp(msg)
+
 
 def hasLikedPhoto(request):
     body = filterParams(request)
@@ -152,15 +162,16 @@ def hasLikedPhoto(request):
     POId, msg = ObId(body['photoId'])
     if not POId:
         return errorResp(msg)
-    res,msg = photosModel.hasLike(POId,userId)
+    res, msg = photosModel.hasLike(POId, userId)
     if res:
-        if res!='null':
+        if res != 'null':
             res = json.loads(res)
         else:
             res = {}
-        return createResponse(200,'OK',{'likes':res})
+        return createResponse(200, 'OK', {'likes': res})
     else:
         return errorResp(msg)
+
 
 def hasLikedAlbum(request):
     body = filterParams(request)
@@ -172,12 +183,12 @@ def hasLikedAlbum(request):
     POId, msg = ObId(body['albumId'])
     if not POId:
         return errorResp(msg)
-    res,msg = albumModel.hasLike(POId,userId)
+    res, msg = albumModel.hasLike(POId, userId)
     if res:
-        if res!='null':
+        if res != 'null':
             res = json.loads(res)
         else:
             res = {}
-        return createResponse(200,'OK',{'likes':res})
+        return createResponse(200, 'OK', {'likes': res})
     else:
         return errorResp(msg)

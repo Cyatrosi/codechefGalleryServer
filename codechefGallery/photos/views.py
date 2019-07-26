@@ -168,13 +168,14 @@ def uploadPhoto(request):
     else:
         return errorResp(ermsg)
 
+
 def deletePhoto(request, photoId):
     OId, ermsg = ObId(photoId)
     if not OId:
         return errorResp(ermsg)
     res, msg = photosModel.deletePhoto(OId)
     if res:
-        return createResponse(200, 'Photo Deleted', {"deleted_cnt":res})
+        return createResponse(200, 'Photo Deleted', {"deleted_cnt": res})
     elif res == 0:
         return createResponse(200, 'No such Image exists', [])
     else:
@@ -185,6 +186,7 @@ def deletePhoto(request, photoId):
 
 def index(request):
     return scanRequest(request)
+
 
 def photo(request, userId):
     return scanRequest(request, userId)

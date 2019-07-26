@@ -431,7 +431,6 @@
             data.append('desc', document.getElementById('desc-cover').value);
             data.append('access', document.getElementById('access-cover').value);
             data.append('file', document.querySelector('#upload-cover').files[0]);
-            console.log("DatA:",data)
             
             request.addEventListener('load', function (e) {
                 if (this.status == '200') {

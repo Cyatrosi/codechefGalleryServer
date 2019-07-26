@@ -86,7 +86,6 @@ def filterParams(request, isNew=True):
                 body['file'] = uploaded_file_url
         elif request.method == 'PUT':
             body = {}
-            print("Body:", request.POST)
             if 'name' in request.POST:
                 body['name'] = request.POST['name']
             if 'desc' in request.POST:
@@ -110,7 +109,6 @@ def filterParams(request, isNew=True):
     else:
         if request.method == 'POST':
             body = {}
-            print("Body:", request.POST)
             if 'name' in request.POST:
                 body['name'] = request.POST['name']
             if 'desc' in request.POST:
@@ -169,9 +167,9 @@ def getAlbum(request, userId):
     if not OId:
         return errorResp(msg)
     res, msg = albumModel.getAlbum(OId)
-    if res: 
+    if res:
         res = json.loads(res)
-        res['albumId']=res['_id']
+        res['albumId'] = res['_id']
         context = dict({'data': res, "albumId": res['_id']})
         return render(request, 'album.html', context)
         # return createResponse(200,'OK',res)
@@ -189,10 +187,10 @@ def updateAlbum(request, albumId):
         filePath = body['url']
         objUrl, ermsg = upload.uploadPhoto(albumId, filePath)
     else:
-        objUrl=True
+        objUrl = True
     if objUrl:
         if 'url' in body:
-            body['url']=objUrl
+            body['url'] = objUrl
         res, msg = albumModel.updateAlbum(OId, body)
         if res:
             return createResponse(200, 'Album Updated', [])
@@ -226,17 +224,17 @@ def createAlbum(request):
     else:
         return errorResp(ermsg)
 
-def deleteAlbum(request,albumId):
+
+def deleteAlbum(request, albumId):
     OId, ermsg = ObId(albumId)
     if not OId:
         return errorResp(ermsg)
     res, msg = albumModel.deleteAlbum(OId)
     if res:
-        res2,msg2 = photosModel.deleteAlbumPhoto(albumId)
-        print("RES:",res,msg2)
-        if res2 or res==0:
-            return createResponse(200, 'Album Deleted with all photos', {"deleted_cnt":res})
-        return createResponse(200, 'Album Deleted without all photos', {"deleted_cnt":res})
+        res2, msg2 = photosModel.deleteAlbumPhoto(albumId)
+        if res2 or res == 0:
+            return createResponse(200, 'Album Deleted with all photos', {"deleted_cnt": res})
+        return createResponse(200, 'Album Deleted without all photos', {"deleted_cnt": res})
     elif res == 0:
         return createResponse(200, 'No such Album exists', [])
     else:
@@ -248,8 +246,10 @@ def deleteAlbum(request,albumId):
 def index(request):
     return scanRequest(request)
 
+
 def albums(request, userId):
     return scanRequest(request, userId)
+
 
 def my(request):
     params = filterParams(request)
