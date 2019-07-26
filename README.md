@@ -45,7 +45,7 @@ Collections:
 Steps:
 1: Clone the App
 2: Install all python modules
-3: Run Mongo
+3: Run Mongo [Mongo will run on http://127.0.0.1:27017/
 4: Go to <Downloaded Path>/codechefGalleryServer/codechefGallery
 5: run python3 manage.py runserver 8000 [Server will run on http://127.0.0.1:8000/ ]
 6: Open the URL and you are good to go. The main webpage will open up
