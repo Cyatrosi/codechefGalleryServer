@@ -1,56 +1,44 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils.html import escape
-from django.http import HttpResponse, JsonResponse
 import os
 import sys
 import json
-from datetime import datetime, date
-from bson import ObjectId
 from codechefGallery import upload
+from codechefGallery import sessions as sessions
 from codechefGallery.model.users import users
+import codechefGallery.utils as utils
 from django import forms
 from django.core.files.storage import FileSystemStorage
+import base64
+from django.contrib import messages
+from codechefGallery import macros as macros
 
 usersModel = users()
+# ===== Forms ======
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label='username', max_length=10000000)
+    password = forms.CharField(label='password', max_length=10000000)
+
 # ====== Util Functions =====
-
-
-class JSONEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, ObjectId):
-            return str(o)
-        if isinstance(o, (date, datetime)):
-            return o.isoformat()
-        return json.JSONEncoder.default(self, o)
-
-
-def ObjectIdToStr(id):
-    if id:
-        res = JSONEncoder().encode(id)
-        res = res.replace("\"", "")
-        res = res.replace("\\", "")
-    else:
-        res = None
-    return res
 
 
 def scanRequest(request, userId=None):
     if userId:
         if request.method == 'PUT':
             return updateUser(request, userId)
-        elif request.method == 'GET':
-            return userInfo(request, userId)
         elif request.method == 'DELETE':
             return deleteUser(request, userId)
         else:
-            return errorResp('Invalid request method')
+            return utils.errorResp('Invalid request method')
     else:
         if request.method == 'POST':
             return createUser(request)
         elif request.method == 'GET':
             return allUsers(request)
         else:
-            return errorResp('Invalid request method')
+            return utils.errorResp('Invalid request method')
 
 
 def filterParams(request):
@@ -88,21 +76,6 @@ def filterParams(request):
         body = {}
     return body
 
-
-def createResponse(statusCode, msg, data):
-    return JsonResponse(dict(status=statusCode, message=msg, data=data))
-
-
-def errorResp(msg):
-    return JsonResponse(dict(status=400, message=msg, data=[]))
-
-
-def ObId(id):
-    try:
-        return ObjectId(id), "OK"
-    except Exception as e:
-        return None, "Invalid Id"
-
 # ====== Main Functions =====
 
 
@@ -115,10 +88,10 @@ def createUser(request):
         body['dp'] = objUrl
         res, msg = usersModel.insertUser(body)
         if res:
-            return createResponse(200, 'User Registered Successfully', [])
-        return errorResp(msg)
+            return utils.createResponse(200, 'User Registered Successfully', [])
+        return utils.errorResp(msg)
     else:
-        return errorResp(ermsg)
+        return utils.errorResp(ermsg)
 
 
 def allUsers(request):
@@ -132,25 +105,41 @@ def allUsers(request):
     res, msg = usersModel.getUsersList(start, limit)
     res = json.loads(res)
     if res:
-        return createResponse(200, 'Users List', res)
-    return errorResp(msg)
+        return utils.createResponse(200, 'Users List', res)
+    return utils.errorResp(msg)
 
 
 def updateUser(request, userId):
     body = filterParams(request)
-    OId, msg = ObId(userId)
+    OId, msg = utils.ObId(userId)
     if not OId:
-        return errorResp(msg)
+        return utils.errorResp(msg)
     res, msg = usersModel.updateUser(OId, body)
     if res:
-        return createResponse(200, 'User Updated', [])
-    return errorResp(msg)
+        return utils.createResponse(200, 'User Updated', [])
+    return utils.errorResp(msg)
 
-
-def userInfo(request, userId):
-    OId, msg = ObId(userId)
+def deleteUser(request, userId):
+    OId, msg = utils.ObId(userId)
     if not OId:
-        return errorResp(msg)
+        return utils.errorResp(msg)
+    res, msg = usersModel.deleteUser(OId)
+    if res:
+        return utils.createResponse(200, 'User Deleted', res)
+    elif res == 0:
+        return utils.createResponse(200, 'User not found', [])
+    return utils.errorResp(msg)
+
+# ====== API ENDPOINTS ======
+
+
+def index(request):
+    if 'userId' not in request.session:
+        return redirect(macros.HOME,error="Session Logged Out")
+    userId = request.session['userId']
+    OId, msg = utils.ObId(userId)
+    if not OId:
+        return utils.errorResp(msg)
     res, msg = usersModel.getUserInfo(OId)
     res = json.loads(res)
     if res:
@@ -158,25 +147,7 @@ def userInfo(request, userId):
             'data': res
         }
         return render(request, 'me.html', context)
-        # return createResponse(200,'User Info',res)
-    return errorResp(msg)
-
-
-def deleteUser(request, userId):
-    OId, msg = ObId(userId)
-    if not OId:
-        return errorResp(msg)
-    res, msg = usersModel.deleteUser(OId)
-    if res:
-        return createResponse(200, 'User Deleted', res)
-    elif res == 0:
-        return createResponse(200, 'User not found', [])
-    return errorResp(msg)
-
-# ====== API ENDPOINTS ======
-
-
-def index(request):
+    return utils.errorResp(msg)
     return scanRequest(request)
 
 
@@ -185,15 +156,39 @@ def user(request, userId):
 
 
 def login(request):
-    body = filterParams(request)
-    if 'username' not in body:
-        return errorResp("username missing")
-    if 'password' not in body:
-        return errorResp("password missing")
-    res, msg = usersModel.validateUser(body['username'], body['password'])
-    if res == 'null':
-        return errorResp("No such user exists")
-    if res:
-        res = json.loads(res)
-        return createResponse(200, 'User Login Successfully', res)
-    return errorResp(msg)
+    if request.method == 'POST':
+        MyLoginForm = LoginForm(request.POST)
+        if MyLoginForm.is_valid():
+            username = MyLoginForm.cleaned_data['username']
+            password = MyLoginForm.cleaned_data['password']
+            res, msg = usersModel.validateUser(username, password)
+            if res == 'null':
+                return redirect(macros.HOME,error="No such user exists")
+            if res:
+                res = json.loads(res)
+                userSession = "23" #sessions.openSession(res['_id'], res['username'])
+                print("UserId:",res)
+                request.session['username'] = username
+                request.session['userId'] = res['_id']
+                request.session['sessionToken'] = userSession
+                return redirect(macros.DASH)
+            return redirect(macros.HOME,error=msg)
+        else:
+            MyLoginForm = LoginForm()
+            return redirect(macros.HOME,error="Invalid Form")
+    else:
+        return redirect(macros.HOME,error="Invalid request method")
+
+def logout(request):
+    try:
+        if 'username' in request.session:
+            del request.session['username']
+        if 'userId' in request.session:
+            del request.session['userId']
+        if 'sessionToken' in request.session:
+            del request.session['sessionToken']
+        #del request.session
+        return redirect(macros.HOME,msg="Logged out!!")
+    except Exception as e:
+        print("Error:",str(e))
+        return redirect(macros.USER,error=str(e))

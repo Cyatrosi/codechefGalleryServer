@@ -3,5 +3,5 @@ from django.utils.html import escape
 from django.http import HttpResponse, JsonResponse
 
 
-def index(request):
+def index(request):    
     return render(request, 'index.html')

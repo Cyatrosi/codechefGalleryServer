@@ -124,3 +124,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = './static'
+
+# Message on Redirect
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

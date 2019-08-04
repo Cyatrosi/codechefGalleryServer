@@ -20,7 +20,7 @@ class users(mongo):
 
     def validateUser(self, userName, password):
         query = dict(username=userName, password=password)
-        projection = dict(name=1, username=1)
+        projection = {'name':1, 'username':1, 'email':1}
         return super().getDoc(self.collection, query, projection)
 
     def deleteUser(self, userId):

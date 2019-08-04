@@ -18,7 +18,6 @@ photosModel = photos()
 class NameForm(forms.Form):
     file = forms.CharField(label='file', max_length=10000000)
 
-
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, ObjectId):
@@ -104,7 +103,6 @@ def ObId(id):
 
 # ====== Main Functions =====
 
-
 def getAllPhotos(request):
     params = filterParams(request)
     start = 0
@@ -119,7 +117,8 @@ def getAllPhotos(request):
         for pic in res:
             pic['pid'] = pic['_id']
         context = {
-            'data': res
+            'data': res,
+            'err':None
         }
         return render(request, 'dash.html', context)
         # return createResponse(200,'OK',res)
@@ -135,7 +134,8 @@ def getPhoto(request, userId):
         res = json.loads(res)
         res['imageId'] = res['_id']
         context = {
-            'data': res
+            'data': res,
+            'err':None
         }
         return render(request, 'photo.html', context)
         # return createResponse(200,'OK',res)

@@ -1,4 +1,4 @@
-<html>
+    <html>
     <head>
         <title>Codechef Gallery</title>
         {% load static %}
@@ -7,16 +7,19 @@
         <link rel="stylesheet" href="{% static 'css/index.css' %}">
         <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
         <script defer src="{% static 'js/index.js' %}"></script>
+        {% if request.session and 'username' in request.session and 'userId' in request.session and 'sessionToken' in request.session %}
+        <script>window.location.href='http://127.0.0.1:8000/photos/'</script>
+        {% endif %}
     </head>
     <body>
         <div class="front-logo">
             <div class="front-logo-text">CODECHEF GALLERY</div>
         </div>
         <div id="login-form" class="form">
-            <form method="POST">
-                <input id = "login-username" class = "txt-inp" type='text' placeholder="Username">
-                <input id = "login-password" class = "txt-inp" type='password' placeholder="Password">
-                <button class = "btn login" onclick = "login()" type="button">LOGIN</button>
+            <form method="POST" action='http://127.0.0.1:8000/users/login/'>
+                <input id = "login-username" name="username" class = "txt-inp" type='text' placeholder="Username">
+                <input id = "login-password" name="password" class = "txt-inp" type='password' placeholder="Password">
+                <button class = "btn login" type="submit">LOGIN</button>
             </form>
             <div class="switch-text">New here? <span onclick = "show_hide('signup-form','login-form')" class="pink-txt">Signup</span></div>
         </div>
@@ -28,7 +31,7 @@
                     </div>
                     <div>
                         <select id="signup-gender" class="txt-inp" required>
-                            <option value="">--SELECT--</option>
+                            <option value="">--- SELECT GENDER ---</option>
                             <option value="M">Male</option>
                             <option value="F">Female</option>
                         </select>
@@ -52,5 +55,13 @@
                 <div class="switch-text">Already a member? <span onclick = "show_hide('login-form','signup-form')" class="green-txt">Login</span></div>
         </div>
         <input type="file" accept="image/jpeg,image/png" style="display:none" id="upload-file" />
+        <div id="flash-error" class="mdl-js-snackbar mdl-snackbar">
+            <div class="mdl-snackbar__text"></div>
+            <button class="mdl-snackbar__action" type="button"></button>
+        </div>
+        <div id="flash-success" class="mdl-js-snackbar mdl-snackbar green-btn">
+            <div class="mdl-snackbar__text"></div>
+            <button class="mdl-snackbar__action" type="button"></button>
+        </div>
     </body>
 </html>

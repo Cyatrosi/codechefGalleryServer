@@ -20,11 +20,11 @@ function getCookie() {
 // ============ AUTH Functions ========
 function validate(username, password) {
     if (!username) {
-        alert("Username is required");
+        flashMsg('error',"Username is required");
         return false;
     }
     if (!password) {
-        alert("Password is required");
+        flashMsg('error',"Password is required");
         return false;
     }
     return true;
@@ -49,40 +49,40 @@ function login() {
                 setCookie(data);
                 window.location.href = "/photos";
             } else {
-                alert(resp.message);
+                flashMsg('error',resp.message);
             }
         } else {
-            alert("An error Occured !");
+            flashMsg('error',"An error Occured !");
         }
     };
 }
 function validateSignup() {
     if (!document.getElementById('signup-username').value) {
-        alert("Enter Username");
+        flashMsg('error',"Enter Username");
         return false;
     }
     if (!document.getElementById('signup-gender').value) {
-        alert("Enter Gender");
+        flashMsg('error',"Enter Gender");
         return false;
     }
     if (!document.getElementById('signup-first-name').value) {
-        alert("Enter First Name");
+        flashMsg('error',"Enter First Name");
         return false;
     }
     if (!document.getElementById('signup-last-name').value) {
-        alert("Enter Last Name");
+        flashMsg('error',"Enter Last Name");
         return false;
     }
     if (!document.getElementById('signup-email').value) {
-        alert("Enter Email");
+        flashMsg('error',"Enter Email");
         return false;
     }
     if (!document.getElementById('signup-password').value) {
-        alert("Enter Password");
+        flashMsg('error',"Enter Password");
         return false;
     }
     if (!document.querySelector('#upload-file').files[0]) {
-        alert("Select Photo");
+        flashMsg('error',"Select Photo");
         return false;
     }
     return true;
@@ -106,13 +106,13 @@ function signup() {
         if (this.status == '200') {
             var resp = this.response
             if (resp.status == 200) {
-                alert("Signup Successful !!");
+                flashMsg('success',"Signup Successful !!");
                 location.reload();
             } else {
-                alert(resp.message);
+                flashMsg('error',resp.message);
             }
         } else {
-            alert("FAILED!! An error Occured !");
+            flashMsg('error',"FAILED!! An error Occured !");
         }
 
     });
@@ -131,17 +131,17 @@ document.querySelector('#upload-file').addEventListener('change', function () {
     var mime_types = ['image/jpeg', 'image/png'];
 
     if (mime_types.indexOf(file.type) == -1) {
-        alert('Error : Incorrect file type');
+        flashMsg('error','Error : Incorrect file type');
         return;
     }
 
     // Max 2 Mb allowed
     if (file.size > 2 * 1024 * 1024) {
-        alert('Error : Exceeded size 2MB');
+        flashMsg('error','Error : Exceeded size 2MB');
         return;
     }
 
-    alert('You have chosen the file ' + file.name);
+    flashMsg('error','You have chosen the file ' + file.name);
 
 });
 // =====================================
@@ -156,4 +156,12 @@ function httpRequest(method, url, params) {
         request.send(params);
     }
     return request;
+}
+function flashMsg(type,msg){
+    if(type == 'success')
+        var snackbarContainer = document.querySelector('#flash-success');
+    else if(type == 'error')
+        var snackbarContainer = document.querySelector('#flash-error');
+    var data = {message: msg}
+    snackbarContainer.MaterialSnackbar.showSnackbar(data);
 }
