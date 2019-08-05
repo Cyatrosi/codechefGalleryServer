@@ -81,10 +81,21 @@
         .pointer{
             cursor:pointer;
         }
+        .loader{
+            position: fixed;
+            top:0;
+            left:0;
+            background-color:white;
+            opacity:0.7;
+            width:100%;
+            height:100%;
+            display:none;
+        }
     </style>
 </head>
 
 <body onload='init()'>
+    <div id="loader" class="loader"></div>
     <div class="front-logo">
         <div onclick="window.history.go(-1);" style="cursor: pointer;"><i style="font-size:25px;"
                 class="material-icons">arrow_back</i></div>
@@ -195,6 +206,10 @@
         } else {
             request.send(params);
         }
+        loader('show');
+        setTimeout(function(){
+            loader('hide');
+        },10000);
         return request;
     }
     function jsonToUrlParams(data) {
@@ -235,6 +250,7 @@
         albumId = "{{albumId}}";
         var request = httpRequest('GET', 'http://127.0.0.1:8000/photos/album/' + albumId, true);
         request.onload = function () {
+            loader('hide');
             if (this.status == '200') {
                 var resp = JSON.parse(this.response);
                 if (resp.status == 200) {
@@ -252,6 +268,7 @@
         if (confirm("Delete this Image?")) {
             var request = httpRequest('DELETE', 'http://127.0.0.1:8000/photos/' + id + "/", null);
             request.onload = function () {
+                loader('hide');
                 if (this.status == '200') {
                     var resp = JSON.parse(this.response);
                     if (resp.status == 200) {
@@ -276,6 +293,7 @@
             params = JSON.stringify(params)
             var request = httpRequest('POST', 'http://127.0.0.1:8000/likes/photos/', params);
             request.onload = function () {
+                loader('hide')
                 if (this.status == '200') {
                     var resp = JSON.parse(this.response);
                     if (resp.status == 200) {
@@ -298,6 +316,7 @@
             params = JSON.stringify(params)
             var request = httpRequest('POST', 'http://127.0.0.1:8000/likes/photos/', params);
             request.onload = function () {
+                loader('hide');
                 if (this.status == '200') {
                     var resp = JSON.parse(this.response);
                     if (resp.status == 200) {
@@ -321,6 +340,7 @@
         }
         params = jsonToUrlParams(params)
         var request = httpRequest('GET', 'http://127.0.0.1:8000/likes/photos?' + params, null);
+        loader('hide');
         request.onload = function () {
             if (this.status == '200') {
                 var resp = JSON.parse(this.response);
@@ -345,5 +365,11 @@
             var snackbarContainer = document.querySelector('#flash-error');
         var data = {message: msg}
         snackbarContainer.MaterialSnackbar.showSnackbar(data);
+    }
+    function loader(type){
+        if(type=='show')
+            document.getElementById('loader').display = "block";
+        if(type=='hide')
+        document.getElementById('loader').display = "none";
     }
 </script>

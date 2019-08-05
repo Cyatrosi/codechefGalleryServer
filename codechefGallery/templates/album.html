@@ -269,10 +269,21 @@
         .pointer{
             cursor:pointer;
         }
+        .loader{
+            position: fixed;
+            top:0;
+            left:0;
+            background-color:white;
+            opacity:0.7;
+            width:100%;
+            height:100%;
+            display:none;
+        }
     </style>
 </head>
 
 <body onload='init()'>
+    <div id="loader" class="loader"></div>
     <div class="front-logo">
         <div onclick="window.history.go(-1);" style="cursor: pointer;"><i style="font-size:25px;"
                 class="material-icons">arrow_back</i></div>
@@ -403,10 +414,15 @@
         if(document.querySelector('#upload-cover').files[0]){
             data.append('file', document.querySelector('#upload-cover').files[0]);
         }
+        loader('show');
+        setTimeout(function(){
+            loader('hide');
+        },10000);
         request.addEventListener('load', function (e) {
             if (this.status == '200') {
                 var resp = this.response
                 if (resp.status == 200) {
+                    loader('hide');
                     flashMsg('success',"Updated Successfully");
                     location.reload();
                 } else {
@@ -426,6 +442,12 @@
 
     function home() {
         window.location.href = "/photos";
+    }
+    function loader(type){
+        if(type=='show')
+            document.getElementById('loader').display = "block";
+        if(type=='hide')
+        document.getElementById('loader').display = "none";
     }
 
     function validate(type) {
@@ -458,6 +480,10 @@
         } else {
             request.send(params);
         }
+        loader('show');
+        setTimeout(function(){
+            loader('hide');
+        },10000);
         return request;
     }
     function jsonToUrlParams(data) {
@@ -500,6 +526,7 @@
         albumId = "{{albumId}}";
         var request = httpRequest('GET', 'http://127.0.0.1:8000/photos/album/' + albumId, true);
         request.onload = function () {
+            loader('hide');
             if (this.status == '200') {
                 var resp = JSON.parse(this.response);
                 if (resp.status == 200) {
@@ -530,6 +557,7 @@
         if(confirm("Delete this Album?")){
             var request = httpRequest('DELETE', 'http://127.0.0.1:8000/album/' + id + "/", null);
             request.onload = function () {
+                loader('hide');
             if (this.status == '200') {
                 var resp = JSON.parse(this.response);
                 if (resp.status == 200) {
@@ -554,6 +582,7 @@
             params = JSON.stringify(params)
             var request = httpRequest('POST', 'http://127.0.0.1:8000/likes/album/', params);
             request.onload = function () {
+                loader('hide');
                 if (this.status == '200') {
                     var resp = JSON.parse(this.response);
                     if (resp.status == 200) {   
@@ -577,6 +606,7 @@
             var request = httpRequest('POST', 'http://127.0.0.1:8000/likes/album/', params);
             request.onload = function () {
                 if (this.status == '200') {
+                    loader('hide');
                     var resp = JSON.parse(this.response);
                     if (resp.status == 200) {
                         var data = resp.data;
@@ -600,6 +630,7 @@
         params = jsonToUrlParams(params)
         var request = httpRequest('GET', 'http://127.0.0.1:8000/likes/album?'+params, null);
         request.onload   = function () {
+            loader('hide');
             if (this.status == '200') {
                 var resp = JSON.parse(this.response);
                 if (resp.status == 200) {

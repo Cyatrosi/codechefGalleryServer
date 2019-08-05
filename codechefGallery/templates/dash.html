@@ -151,16 +151,39 @@
             grid-template-columns:25% 25% 25% 25%;
             width:80%;
             margin-left:10%;
+            margin-bottom:1%;
+            padding-bottom:1%;
             box-shadow: 0px 0px 5px 2px #bdbdbd;
+        }
+        .loader{
+            position: fixed;
+            top:0;
+            left:0;
+            background-color:white;
+            opacity:0.7;
+            width:100%;
+            height:100%;
+            display:none;
+        }
+        .my_tag{
+            margin-top:2%;
+            margin-bottom:2%;
+            font-size:17px;
+            color:#757575;
         }
     </style>
 </head>
 
 <body onload="init()">
+    <div id="loader" class="loader"></div>
     <div class="front-logo">
         <div></div>
         <div class="front-logo-text">CODECHEF GALLERY</div>
         <a href="http://127.0.0.1:8000/users/"><div id="userLogo" class="circle profile"></div></a>
+    </div>
+    <div class="my_tag">
+        <hr>
+        <div style="background-color:#e3f2fd;margin-top:-2.1%;width:20%;margin-left:40%;">Photos from all over the world</div>
     </div>
     <div class="image-box">
         {% for pic in data %}
@@ -246,7 +269,12 @@
             }
             params = JSON.stringify(params)
             var request = httpRequest('POST', 'http://127.0.0.1:8000/likes/photos/', params);
+            loader('show');
+            setTimeout(function(){
+                loader('hide');
+            },10000);
             request.onload = function () {
+                loader('hide');
                 if (this.status == '200') {
                     var resp = JSON.parse(this.response);
                     if (resp.status == 200) {
@@ -268,7 +296,12 @@
             }
             params = JSON.stringify(params)
             var request = httpRequest('POST', 'http://127.0.0.1:8000/likes/photos/', params);
+            loader('show');
+            setTimeout(function(){
+                loader('hide');
+            },10000);
             request.onload = function () {
+                loader('hide');
                 if (this.status == '200') {
                     var resp = JSON.parse(this.response);
                     if (resp.status == 200) {
@@ -292,7 +325,12 @@
         }
         params = jsonToUrlParams(params)
         var request = httpRequest('GET', 'http://127.0.0.1:8000/likes/photos?' + params, null);
+        loader('show');
+        setTimeout(function(){
+            loader('hide');
+        },10000);
         request.onload = function () {
+            loader('hide');
             if (this.status == '200') {
                 var resp = JSON.parse(this.response);
                 if (resp.status == 200) {
@@ -338,5 +376,11 @@
             var snackbarContainer = document.querySelector('#flash-error');
         var data = {message: msg}
         snackbarContainer.MaterialSnackbar.showSnackbar(data);
+    }
+    function loader(type){
+        if(type=='show')
+            document.getElementById('loader').display = "block";
+        if(type=='hide')
+        document.getElementById('loader').display = "none";
     }
 </script>

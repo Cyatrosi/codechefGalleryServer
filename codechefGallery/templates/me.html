@@ -261,10 +261,21 @@
             font-size:17px;
             color:#757575;
         }
+        .loader{
+            position: fixed;
+            top:0;
+            left:0;
+            background-color:white;
+            opacity:0.7;
+            width:100%;
+            height:100%;
+            display:none;
+        }
     </style>
 </head>
 
 <body onload='init()'>
+    <div id="loader" class="loader"></div>
     <div class="front-logo">
         <div onclick="home()" style="cursor: pointer;"><i style="font-size:25px;" class="material-icons">home</i></div>
         <div class="front-logo-text">USER PROFILE</div>
@@ -414,6 +425,7 @@
         data.append('file', document.querySelector('#upload-file').files[0]);
 
         request.addEventListener('load', function (e) {
+            loader('hide');
             if (this.status == '200') {
                 var resp = this.response
                 if (resp.status == 200) {
@@ -431,6 +443,10 @@
         request.responseType = 'json';
         request.open('POST', 'http://127.0.0.1:8000/photos/');
         request.send(data);
+        loader('show');
+        setTimeout(function(){
+            loader('hide');
+        },10000);
     }
 
     // ==== Uploading Album ========
@@ -466,8 +482,12 @@
             data.append('desc', document.getElementById('desc-cover').value);
             data.append('access', document.getElementById('access-cover').value);
             data.append('file', document.querySelector('#upload-cover').files[0]);
+            loader('show');
+            setTimeout(function(){
+                loader('hide');
+            },10000);
             request.addEventListener('load', function (e) {
-                console.log("A");
+                loader('hide');
                 if (this.status == '200') {
                     var resp = this.response
                     if (resp.status == 200) {
@@ -534,6 +554,7 @@
         body = JSON.stringify(body);
         var request = httpRequest('PUT', 'http://127.0.0.1:8000/users/' + user.userId + "/", body);
         request.onload = function () {
+            loader('hide');
             if (this.status == '200') {
                 var resp = JSON.parse(this.response);
                 if (resp.status == 200) {
@@ -547,6 +568,10 @@
                 flashMsg('error',"Error Updatng Users");
             }
         };
+        loader('show');
+        setTimeout(function(){
+            loader('hide');
+        },10000);
     }
     function validate(type) {
         var res = {};
@@ -636,7 +661,12 @@
         };
         params = jsonToUrlParams(params)
         var request = httpRequest('GET', 'http://127.0.0.1:8000/album/my' + "?" + params, true);
+        loader('show');
+        setTimeout(function(){
+            loader('hide');
+        },10000);
         request.onload = function () {
+            loader('hide');
             if (this.status == '200') {
                 var resp = JSON.parse(this.response);
                 if (resp.status == 200) {
@@ -679,5 +709,11 @@
             var snackbarContainer = document.querySelector('#flash-error');
         var data = {message: msg}
         snackbarContainer.MaterialSnackbar.showSnackbar(data);
+    }
+    function loader(type){
+        if(type=='show')
+            document.getElementById('loader').style.display = "block";
+        if(type=='hide')
+            document.getElementById('loader').style.display = "none";
     }
 </script>
